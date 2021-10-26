@@ -1,0 +1,60 @@
+---
+title: "Assignment 3 - Task 3"
+author: "Chase Tarr"
+date: "10/25/2021"
+output: html_document
+---
+# Overview
+```{r setup, include=TRUE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(janitor)
+library(here)
+library(lubridate)
+library(kableExtra)
+library(palmerpenguins)
+
+```
+
+## Reading in the Data
+ - Urchins
+```{r}
+urchins <- read_csv(here("data", "urchins.csv")) %>% 
+  clean_names()
+```
+
+# Section 1: Size Comparisons
+ - Comparing size of purple and red urchins
+
+### Data Visualization 
+```{r}
+ggplot(data = urchins, aes(x = size, fill = common_name)) +
+  scale_fill_manual(values = c("purple", "red"),
+                    name = "Species") +
+  geom_histogram(bin = 10) +
+  facet_wrap(~ common_name) +
+  labs(x = "Urchin Diameter (cm)", y = "Count")
+  
+```
+
+### Descriptive Statistics Table
+```{r}
+urchins_purp_vs_red <- urchins %>% 
+  group_by(common_name) %>% 
+  mutate(mean_size_cm = mean(size),
+         median_size_cm = median(size),
+         sd_size_cm = sd(size),
+         sample_size_n = sum(common_name == c("Purple Urchin", "Red Urchin"))) 
+new_urchins_table <- urchins_purp_vs_red %>% 
+  summarize(
+    mean_size_cm = round(mean_size_cm, 2),
+    sd_size_cm = round(sd_size_cm, 2),
+    median_size_cm,
+    sample_size_n)
+
+new_urchins_table
+```
+
+ 
+ 
