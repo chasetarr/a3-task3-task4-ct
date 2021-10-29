@@ -16,7 +16,7 @@ library(here)
 library(lubridate)
 library(kableExtra)
 library(palmerpenguins)
-
+library(DT)
 ```
 
 ## Reading in the Data
@@ -53,7 +53,7 @@ urchins_purp_vs_red <- urchins %>%
     sample_size_n = n())
 
 
-kable(urchins_purp_vs_red)
+datatable(urchins_purp_vs_red)
 ```
 
 
