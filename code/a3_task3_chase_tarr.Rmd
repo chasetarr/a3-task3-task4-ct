@@ -42,19 +42,49 @@ ggplot(data = urchins, aes(x = size, fill = common_name)) +
 ```{r}
 urchins_purp_vs_red <- urchins %>% 
   group_by(common_name) %>% 
-  mutate(mean_size_cm = mean(size),
-         median_size_cm = median(size),
-         sd_size_cm = sd(size),
-         sample_size_n = sum(common_name == c("Purple Urchin", "Red Urchin"))) 
-new_urchins_table <- urchins_purp_vs_red %>% 
   summarize(
-    mean_size_cm = round(mean_size_cm, 2),
-    sd_size_cm = round(sd_size_cm, 2),
-    median_size_cm,
-    sample_size_n)
+    mean_size_cm = round(mean(size), 2),
+    sd_size_cm = round(mean(size), 2),
+    median_size_cm = median(size),
+    sample_size_n = n())
 
-new_urchins_table
+
+urchins_purp_vs_red
 ```
 
+# Section 2
+ - Exploring Purple Urchins by site and year
  
+```{r}
+purple_urchins <- urchins %>% 
+  filter(common_name == "Purple Urchin") %>% 
+  mutate(Date = mdy(date)) %>% 
+  mutate(Year = year(Date)) %>% 
+  mutate(site_new = case_when(
+    site == "NAPL" ~ "Naples Reef",
+    site == "AQUE" ~ "Arroyo Quemado Reef", 
+    site == "CARP" ~ "Carpinteria Reef",
+    site == "MOHK" ~ "Mohawk Reef",
+    site == "IVEE" ~ "Isla Vista Reef")
+  ) %>% 
+  select(site, treatment, size, scientific_name, common_name, Date, Year, site_new)
+
+purple_urchins_table <- purple_urchins %>% 
+  group_by(site_new, Year, common_name) %>% 
+  summarize(
+    total_per_site =  n()
+  )
+```
+ 
+## Finalized Graph
+
+```{r}
+ggplot(data = purple_urchins, aes(x = Date, fill = site_new)) +
+  scale_fill_manual(values = c("purple", "red", "blue", "yellow", "orange"),
+                    name = "Site")+
+  geom_histogram(bin = 45) +
+  facet_wrap(~ site_new, scales = 'free')+
+  labs(x = "Year", y = "Purple Urchin Count")
+```
+
  
