@@ -5,6 +5,8 @@ date: "10/25/2021"
 output: html_document
 ---
 # Overview
+  - In this document we will be first creating a new repository (chasetarr / a3-task3-task4-ct) in order to save our reproducible code for future use or reference. I will then be comparing Urchins by size to analyze differences. This comparison will be based on year and site. These sites include; Naples Reef (NAPL), Arroyo Quemado Reef (AQUE), Carpinteria Reef (CARP), Mohawk Reef (MOHK), and Isla Vista Reef (IVEE). 
+  
 ```{r setup, include=TRUE, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
@@ -18,7 +20,7 @@ library(palmerpenguins)
 ```
 
 ## Reading in the Data
- - Urchins
+ - cleaning the data to make all column names have the same lowercase structure.
 ```{r}
 urchins <- read_csv(here("data", "urchins.csv")) %>% 
   clean_names()
@@ -38,6 +40,8 @@ ggplot(data = urchins, aes(x = size, fill = common_name)) +
   
 ```
 
+This figure illustrates the difference in *Urchin Diameter (cm)* based on species. **Purple Urchins** are significantly smaller. **Red Urchins** on the other hand are approximately 2cm bigger in average size.
+
 ### Descriptive Statistics Table
 ```{r}
 urchins_purp_vs_red <- urchins %>% 
@@ -49,8 +53,13 @@ urchins_purp_vs_red <- urchins %>%
     sample_size_n = n())
 
 
-urchins_purp_vs_red
+kable(urchins_purp_vs_red)
 ```
+
+
+This table represents the average size, standard devation from size, median size, and the sample size studied for both **Purple Urchins** and **Red Urchins**.
+
+It is evident that these to species of Urchins differ in size significantly with Red Urchins being approximately 35% bigger. Central tendency differs by 2.5cm from Purple Urchins to Red Urchins which could indicate a level of adaptation for both species to survive based on resources and competition. Sample size may also play a role in comparison as there are approximately 400 less Red Urchins which could be due to the larger sie resulting in less urchins being able to populate that niche.
 
 # Section 2
  - Exploring Purple Urchins by site and year
@@ -87,4 +96,4 @@ ggplot(data = purple_urchins, aes(x = Date, fill = site_new)) +
   labs(x = "Year", y = "Purple Urchin Count")
 ```
 
- 
+ This figure represents the counts of **Purple Urchins** based on *Year*. Separated by location, we see an evident decrease in counts of Purple Urchins at Naples Reef, Arroyo Quemada Reef, and Carpinteria Reef, and Mohawk Reef. However we see a somewhat stable count of Purple Urchins at Isla Vista Reef as years progressed. I would have taken into account the affects of climate change, specifically ocean warming, as well as direct human interaction with the reefs these Urchins populate when analyzing their decrease in stability of populations. A different impact to the population of urchins observed may have been due to local predators in the area increasing or decreasing thereby affecting the urchin populations.
