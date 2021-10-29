@@ -1,0 +1,63 @@
+---
+title: "Task 4: Naples Reef (2010) Purple Urchins"
+author: "Chase Tarr"
+date: "10/29/2021"
+output: html_document
+---
+# Overview
+ - In this document, we will be analyzing data of Purple Urchins located in Naples Reef observed in the year 2010.
+ 
+```{r setup, include=TRUE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(janitor)
+library(kableExtra)
+library(DT)
+
+urchins <- read_csv(here("data", "urchins.csv")) %>% 
+  clean_names()
+```
+### Comparing mean size of purple urchins in CONTROL
+
+```{r}
+purple_urchins_compare <- urchins %>% # pulling data from urchins dataset
+  filter(site == "NAPL", # filtering for data only from Naples Reef 2010
+         common_name == "Purple Urchin") %>% # filtering data to only pull values from Purple Urchins
+  mutate(date = mdy(date), # putting data into correct date format
+         year = year(date)) %>% 
+  filter(year == "2010")
+```
+
+```{r}
+ggplot(data = purple_urchins_compare, aes(sample = size, fill = treatment)) +
+  geom_qq() +
+  facet_wrap(~ treatment) +
+  theme_bw() +
+  labs(y = "Urchin Size")
+ 
+```
+ 
+This plot represents the size of **Purple Urchins** separated by *treatment*. The *ANNUAL* control shows a slightly bigger urchin size with a normal distribution in both treatments. There is an evident pattern of urchins increasing by incriments of half a cm. 
+ 
+### Creating a table to visualize mean size per treatment
+```{r}
+purple_urchins_mean <- purple_urchins_compare %>% 
+  group_by(treatment, year, common_name) %>%  # grouping by treatment: Either Control or Annual, and including the column 'common_name" for future reference to what we were visualizing
+  summarize(
+    mean_cm = round(mean(size), 2), # rounding data
+    sd_cm = round(sd(size), 2),
+    median_cm = median(size),
+    samplesize_cm = n()
+  )
+
+```
+ 
+## Purple Urchins Mean Size Data Table 
+```{r}
+datatable(purple_urchins_mean)
+```
+
+ This table indicates the *mean*, *standard deviation*, *median*, and *sample size* in cm of the Purple Urchins in Naples Reef. 
